@@ -1,10 +1,13 @@
-﻿<div class="job_listing_area plus_padding" style="margin-top: 5%">
+﻿<div class="job_listing_area plus_padding">
     <div class="container">
-        <div class="row" style="text-align: right;margin-bottom: 2%;">
-            <div class="col-lg-12">
-                <a class="boxed-btn3" href="#">Post Job</a>
+        @if (User.Identity.IsAuthenticated)
+        {
+            <div class="row" style="text-align: right;margin-bottom: 2%;">
+                <div class="col-lg-12">
+                    <a class="boxed-btn3" href="#">Post Job</a>
+                </div>
             </div>
-        </div>
+        }
         <div class="row">
             <div class="col-lg-3">
                 <div class="job_filter white-bg">
@@ -44,7 +47,7 @@
                             <div class="single_jobs white-bg d-flex justify-content-between">
                                 <div class="jobs_left d-flex align-items-center">
                                     <div class="thumb">
-                                        <img src="img/svg_icon/1.svg" alt="">
+                                        <img src="~/Content/img/svg_icon/1.svg" alt="">
                                     </div>
                                     <div class="jobs_conetent">
                                         <a href="job_details.html"><h4>Software Engineer</h4></a>
@@ -60,35 +63,14 @@
                                 </div>
                                 <div class="jobs_right">
                                     <div class="apply_now">
-
-                                        <a href="job_details.html" class="genric-btn danger">Delete</a>
-                                        <a href="job_details.html" class="genric-btn success">Edit</a>
+                                        <a class="heart_mark" href="#"> <i class="fa fa-remove"></i> </a>
+                                        <a href="job_details.html" class="boxed-btn3">Apply Now</a>
                                     </div>
                                     <div class="date">
                                         <p>Date line: 31 Jan 2020</p>
                                     </div>
                                 </div>
-                            </div>
-                        </div>
-                        <div class="col-lg-12 col-md-12">
-                            <div class="single_jobs white-bg d-flex justify-content-between">
-                                <div class="jobs_left d-flex align-items-center">
-                                    <div class="thumb">
-                                        <img src="img/svg_icon/1.svg" alt="">
-                                    </div>
-                                    <div class="jobs_conetent">
-                                        <a href="job_details.html"><h4>Software Engineer</h4></a>
-                                        <div class="links_locat d-flex align-items-center">
-                                            <div class="location">
-                                                <p> <i class="fa fa-map-marker"></i> California, USA</p>
-                                            </div>
-                                            <div class="location">
-                                                <p> <i class="fa fa-clock-o"></i> Part-time</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="jobs_right">
+                                @*<div class="jobs_right">
                                     <div class="apply_now">
 
                                         <a href="job_details.html" class="genric-btn danger">Delete</a>
@@ -97,67 +79,7 @@
                                     <div class="date">
                                         <p>Date line: 31 Jan 2020</p>
                                     </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-lg-12 col-md-12">
-                            <div class="single_jobs white-bg d-flex justify-content-between">
-                                <div class="jobs_left d-flex align-items-center">
-                                    <div class="thumb">
-                                        <img src="img/svg_icon/1.svg" alt="">
-                                    </div>
-                                    <div class="jobs_conetent">
-                                        <a href="job_details.html"><h4>Software Engineer</h4></a>
-                                        <div class="links_locat d-flex align-items-center">
-                                            <div class="location">
-                                                <p> <i class="fa fa-map-marker"></i> California, USA</p>
-                                            </div>
-                                            <div class="location">
-                                                <p> <i class="fa fa-clock-o"></i> Part-time</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="jobs_right">
-                                    <div class="apply_now">
-
-                                        <a href="job_details.html" class="genric-btn danger">Delete</a>
-                                        <a href="job_details.html" class="genric-btn success">Edit</a>
-                                    </div>
-                                    <div class="date">
-                                        <p>Date line: 31 Jan 2020</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-lg-12 col-md-12">
-                            <div class="single_jobs white-bg d-flex justify-content-between">
-                                <div class="jobs_left d-flex align-items-center">
-                                    <div class="thumb">
-                                        <img src="img/svg_icon/1.svg" alt="">
-                                    </div>
-                                    <div class="jobs_conetent">
-                                        <a href="job_details.html"><h4>Software Engineer</h4></a>
-                                        <div class="links_locat d-flex align-items-center">
-                                            <div class="location">
-                                                <p> <i class="fa fa-map-marker"></i> California, USA</p>
-                                            </div>
-                                            <div class="location">
-                                                <p> <i class="fa fa-clock-o"></i> Part-time</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="jobs_right">
-                                    <div class="apply_now">
-
-                                        <a href="job_details.html" class="genric-btn danger">Delete</a>
-                                        <a href="job_details.html" class="genric-btn success">Edit</a>
-                                    </div>
-                                    <div class="date">
-                                        <p>Date line: 31 Jan 2020</p>
-                                    </div>
-                                </div>
+                                </div>*@
                             </div>
                         </div>
                     </div>

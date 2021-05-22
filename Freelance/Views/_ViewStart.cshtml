@@ -1,16 +1,16 @@
 ﻿@{
     if(User.Identity.IsAuthenticated && User.IsInRole("Admin"))
     {
-        Layout = "DashboardLayout";
+        Layout = "~/Views/Shared/DashboardLayout.cshtml";
     }
 
-    else if (User.Identity.IsAuthenticated && User.IsInRole("Client)"))
+    else if (User.Identity.IsAuthenticated && User.IsInRole("Client"))
     {
-        Layout = "FactoryLayout";
+        Layout = "~/Views/Shared/FactoryLayout.cshtml";
     }
 
     else
     {
-        Layout = "WallLayout";
+        Layout = "~/Views/Shared/WallLayout.cshtml";
     }
 }

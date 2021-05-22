@@ -1,31 +1,99 @@
-﻿@{
-    ViewBag.Title = "Home Page";
-}
-
-<div class="jumbotron">
-    <h1>ASP.NET</h1>
-    <p class="lead">ASP.NET is a free web framework for building great Web sites and Web applications using HTML, CSS and JavaScript.</p>
-    <p><a href="https://asp.net" class="btn btn-primary btn-lg">Learn more &raquo;</a></p>
-</div>
-
-<div class="row">
-    <div class="col-md-4">
-        <h2>Getting started</h2>
-        <p>
-            ASP.NET MVC gives you a powerful, patterns-based way to build dynamic websites that
-            enables a clean separation of concerns and gives you full control over markup
-            for enjoyable, agile development.
-        </p>
-        <p><a class="btn btn-default" href="https://go.microsoft.com/fwlink/?LinkId=301865">Learn more &raquo;</a></p>
-    </div>
-    <div class="col-md-4">
-        <h2>Get more libraries</h2>
-        <p>NuGet is a free Visual Studio extension that makes it easy to add, remove, and update libraries and tools in Visual Studio projects.</p>
-        <p><a class="btn btn-default" href="https://go.microsoft.com/fwlink/?LinkId=301866">Learn more &raquo;</a></p>
-    </div>
-    <div class="col-md-4">
-        <h2>Web Hosting</h2>
-        <p>You can easily find a web hosting company that offers the right mix of features and price for your applications.</p>
-        <p><a class="btn btn-default" href="https://go.microsoft.com/fwlink/?LinkId=301867">Learn more &raquo;</a></p>
+﻿<!-- bradcam_area  -->
+<div class="bradcam_area bradcam_bg_1">
+    <div class="container">
+        <div class="row">
+            <div class="col-xl-12">
+                <div class="bradcam_text">
+                    <h3>Saved Jobs</h3>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
+<!--/ bradcam_area  -->
+<!-- job_listing_area_start  -->
+<div class="job_listing_area plus_padding">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-3">
+                <div class="job_filter white-bg">
+                    <div class="form_inner white-bg">
+                        <h3>Filter</h3>
+                        <form action="#">
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <div class="single_field">
+                                        <input type="text" placeholder="Job Title">
+                                    </div>
+                                </div>
+                                <div class="col-lg-12">
+                                    <div class="single_field">
+                                        <input type="Date" placeholder="Choose Date">
+                                    </div>
+                                </div>
+                                <div class="col-lg-12">
+                                    <div class="single_field">
+                                        <input type="text" placeholder="Client Name">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="reset_btn">
+                                <button class="boxed-btn3 w-100" type="submit">Search</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-9">
+
+                <div class="job_lists m-0">
+                    <div class="row">
+                        <div class="col-lg-12 col-md-12">
+                                <div class="single_jobs white-bg d-flex justify-content-between">
+                                    <div class="jobs_left d-flex align-items-center">
+                                        <div class="thumb">
+                                            <img src="~/Content/img/svg_icon/1.svg" alt="">
+                                        </div>
+                                        <div class="jobs_conetent">
+                                            <a href="job_details.html"><h4>Software Engineer</h4></a>
+                                            <div class="links_locat d-flex align-items-center">
+                                                <div class="location">
+                                                    <p> <i class="fa fa-map-marker"></i> California, USA</p>
+                                                </div>
+                                                <div class="location">
+                                                    <p> <i class="fa fa-clock-o"></i> Part-time</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="jobs_right">
+                                        <div class="apply_now">
+                                            <a class="heart_mark" href="#"> <i class="fa fa-remove"></i> </a>
+                                            <a href="job_details.html" class="boxed-btn3">Apply Now</a>
+                                        </div>
+                                        <div class="date">
+                                            <p>Date line: 31 Jan 2020</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="pagination_wrap">
+                                <ul>
+                                    <li><a href="#"> <i class="ti-angle-left"></i> </a></li>
+                                    <li><a href="#"><span>01</span></a></li>
+                                    <li><a href="#"><span>02</span></a></li>
+                                    <li><a href="#"> <i class="ti-angle-right"></i> </a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- job_listing_area_end  -->

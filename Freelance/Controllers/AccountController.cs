@@ -9,6 +9,7 @@ using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using Freelance.Models;
+using System.IO;
 
 namespace Freelance.Controllers
 {
@@ -17,6 +18,7 @@ namespace Freelance.Controllers
     {
         private ApplicationSignInManager _signInManager;
         private ApplicationUserManager _userManager;
+        private ApplicationRoleManager _roleManager;
 
         public AccountController()
         {
@@ -52,6 +54,18 @@ namespace Freelance.Controllers
             }
         }
 
+        public ApplicationRoleManager RoleManager
+        {
+            get
+            {
+                return _roleManager ?? HttpContext.GetOwinContext().Get<ApplicationRoleManager>();
+            }
+            private set
+            {
+                _roleManager = value;
+            }
+        }
+
         //
         // GET: /Account/Login
         [AllowAnonymous]
@@ -79,7 +93,7 @@ namespace Freelance.Controllers
             switch (result)
             {
                 case SignInStatus.Success:
-                    return RedirectToLocal(returnUrl);
+                    return RedirectToAction("Posts", "Post");
                 case SignInStatus.LockedOut:
                     return View("Lockout");
                 case SignInStatus.RequiresVerification:
@@ -87,7 +101,7 @@ namespace Freelance.Controllers
                 case SignInStatus.Failure:
                 default:
                     ModelState.AddModelError("", "Invalid login attempt.");
-                    return View(model);
+                    return View("_LoginPartial", model);
             }
         }
 
@@ -151,10 +165,32 @@ namespace Freelance.Controllers
         {
             if (ModelState.IsValid)
             {
-                var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
+                string fileName = Path.GetFileNameWithoutExtension(model.PhotoFile.FileName);
+                string extension = Path.GetExtension(model.PhotoFile.FileName);
+
+                fileName = fileName + DateTime.Now.ToString("yymmssfff") + extension;
+
+                model.PhotoPath = "~/Photos/" + fileName;
+
+                fileName = Path.Combine(Server.MapPath("~/Photos"), fileName);
+
+                model.PhotoFile.SaveAs(fileName);
+
+                var user = new ApplicationUser
+                {
+                    FirstName = model.FirstName,
+                    LastName = model.LastName,
+                    PhotoPath = model.PhotoPath,
+                    UserName = model.Email,
+                    Email = model.Email,
+                    PhoneNumber = model.PhoneNumber
+                };
+
                 var result = await UserManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
+                    await UserManager.AddToRoleAsync(user.Id, model.RoleName);
+
                     await SignInManager.SignInAsync(user, isPersistent:false, rememberBrowser:false);
                     
                     // For more information on how to enable account confirmation and password reset please visit https://go.microsoft.com/fwlink/?LinkID=320771
@@ -163,13 +199,13 @@ namespace Freelance.Controllers
                     // var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
                     // await UserManager.SendEmailAsync(user.Id, "Confirm your account", "Please confirm your account by clicking <a href=\"" + callbackUrl + "\">here</a>");
 
-                    return RedirectToAction("Index", "Home");
+                    return RedirectToAction("Posts", "Post");
                 }
                 AddErrors(result);
             }
 
             // If we got this far, something failed, redisplay form
-            return View(model);
+            return View("_RegisterPartial", model);
         }
 
         //
@@ -392,7 +428,7 @@ namespace Freelance.Controllers
         public ActionResult LogOff()
         {
             AuthenticationManager.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("Posts", "Post");
         }
 
         //
@@ -401,6 +437,23 @@ namespace Freelance.Controllers
         public ActionResult ExternalLoginFailure()
         {
             return View();
+        }
+
+        [AllowAnonymous]
+        public ActionResult Profile()
+        {
+            var userId = User.Identity.GetUserId();
+            var model = UserManager.FindById(userId);
+
+            return View(model);
+        }
+
+        [AllowAnonymous]
+        public ActionResult Users()
+        {
+            var model = UserManager.Users.ToList();
+
+            return View(model);
         }
 
         protected override void Dispose(bool disposing)

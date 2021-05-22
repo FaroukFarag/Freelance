@@ -9,22 +9,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <!-- <link rel="manifest" href="site.webmanifest"> -->
-    <link rel="shortcut icon" type="image/x-icon" href="img/favicon.png">
+    <link rel="shortcut icon" type="image/x-icon" href="~/Content/img/favicon.png">
     <!-- Place favicon.ico in the root directory -->
 
     <!-- CSS here -->
-    <link rel="stylesheet" href="css/bootstrap.min.css">
-    <link rel="stylesheet" href="css/owl.carousel.min.css">
-    <link rel="stylesheet" href="css/magnific-popup.css">
-    <link rel="stylesheet" href="css/font-awesome.min.css">
-    <link rel="stylesheet" href="css/themify-icons.css">
-    <link rel="stylesheet" href="css/nice-select.css">
-    <link rel="stylesheet" href="css/flaticon.css">
-    <link rel="stylesheet" href="css/gijgo.css">
-    <link rel="stylesheet" href="css/animate.min.css">
-    <link rel="stylesheet" href="css/slicknav.css">
+    <link rel="stylesheet" href="~/Content/css/bootstrap.min.css">
+    <link rel="stylesheet" href="~/Content/css/owl.carousel.min.css">
+    <link rel="stylesheet" href="~/Content/css/magnific-popup.css">
+    <link rel="stylesheet" href="~/Content/css/font-awesome.min.css">
+    <link rel="stylesheet" href="~/Content/css/themify-icons.css">
+    <link rel="stylesheet" href="~/Content/css/nice-select.css">
+    <link rel="stylesheet" href="~/Content/css/flaticon.css">
+    <link rel="stylesheet" href="~/Content/css/gijgo.css">
+    <link rel="stylesheet" href="~/Content/css/animate.min.css">
+    <link rel="stylesheet" href="~/Content/css/slicknav.css">
 
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="~/Content/css/style.css">
     <!-- <link rel="stylesheet" href="css/responsive.css"> -->
 </head>
 
@@ -42,8 +42,8 @@
                         <div class="row align-items-center">
                             <div class="col-xl-3 col-lg-2">
                                 <div class="logo">
-                                    <a href="index.html">
-                                        <img src="img/logo.png" alt="">
+                                    <a href="@Url.Action("Posts", "Post")">
+                                        <img src="~/Content/img/logo.png" alt="">
                                     </a>
                                 </div>
                             </div>
@@ -51,9 +51,7 @@
                                 <div class="main-menu  d-none d-lg-block">
                                     <nav>
                                         <ul id="navigation">
-                                            <li><a href="index.html">home</a></li>
-                                            <li><a href="jobs.html">Browse Job</a></li>
-                                            <li><a href="contact.html">Contact</a></li>
+                                            <li><a href="@Url.Action("Posts", "Post")">home</a></li>
                                         </ul>
                                     </nav>
                                 </div>
@@ -61,7 +59,12 @@
                             <div class="col-xl-3 col-lg-3 d-none d-lg-block">
                                 <div class="Appointment">
                                     <div class="phone_num d-none d-xl-block">
-                                        <a href="#">Log out</a>
+                                        @using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm", @class = "navbar-right" }))
+                                        {
+                                            @Html.AntiForgeryToken()
+
+                                            <a href="javascript:document.getElementById('logoutForm').submit()">Log out</a>
+                                        }
                                     </div>
                                 </div>
                             </div>
@@ -85,28 +88,15 @@
                 <div class="col-lg-3 col-md-3" style="height: auto;background: white;border-right: 5px solid #F5F7FA;">
                         
                         <ul style="margin-top: 30%;margin-left: 10%;">
-                            <li style="margin-bottom: 5%;"><a href="client_profile.html" style="text-decoration: underline">Profile</a></li>
-                            <li style="margin-bottom: 5%;"><a href="post_job.html" style="text-decoration: underline">Create New Post</a></li>
-                            <li style="margin-bottom: 5%;"><a href="client_jobs_history.html" style="text-decoration: underline">My Posts</a></li>
+                            <li style="margin-bottom: 5%;"><a href="@Url.Action("Profile", "Account")" style="text-decoration: underline">Profile</a></li>
+                            <li style="margin-bottom: 5%;"><a href="@Url.Action("Create", "Post")" style="text-decoration: underline">Create New Post</a></li>
+                            <li style="margin-bottom: 5%;"><a href="@Url.Action("Posts", "Post")" style="text-decoration: underline">My Posts</a></li>
                             <li style="margin-bottom: 5%;"><a href="Proposals.html" style="text-decoration: underline">Received Proposals</a></li>
-                            <li style="margin-bottom: 5%;"><a href="update_client_profile.html" style="text-decoration: underline">Update Profile</a></li>
+                            <li style="margin-bottom: 5%;"><a href="@Url.Action("Edit", "Post")" style="text-decoration: underline">Update Profile</a></li>
                         </ul>
                 </div>
                 <div class="col-lg-9 col-md-9" style="background: white; padding: 5%; height: 50%;">
                     @RenderBody()
-                    @*<div style="text-align: center;">
-                        <img src="img/candiateds/1.png" style="border-radius: 20%;">
-                        <p>username</p>
-                    </div>
-                    <div style="margin-top: 2%;">
-                        <ul>
-
-                            <li>first name</li>
-                            <li>last name</li>
-                            <li>email</li>
-                            <li>phone number</li>
-                        </ul>
-                    </div>*@
                 </div>
             </div>
         </div>
@@ -121,7 +111,7 @@
                         <div class="footer_widget wow fadeInUp" data-wow-duration="1s" data-wow-delay=".3s">
                             <div class="footer_logo">
                                 <a href="#">
-                                    <img src="img/logo.png" alt="">
+                                    <img src="~/Content/img/logo.png" alt="">
                                 </a>
                             </div>
                             <p>
@@ -218,36 +208,36 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All r
 
     <!-- link that opens popup -->
     <!-- JS here -->
-    <script src="js/vendor/modernizr-3.5.0.min.js"></script>
-    <script src="js/vendor/jquery-1.12.4.min.js"></script>
-    <script src="js/popper.min.js"></script>
-    <script src="js/bootstrap.min.js"></script>
-    <script src="js/owl.carousel.min.js"></script>
-    <script src="js/isotope.pkgd.min.js"></script>
-    <script src="js/ajax-form.js"></script>
-    <script src="js/waypoints.min.js"></script>
-    <script src="js/jquery.counterup.min.js"></script>
-    <script src="js/imagesloaded.pkgd.min.js"></script>
-    <script src="js/scrollIt.js"></script>
-    <script src="js/jquery.scrollUp.min.js"></script>
-    <script src="js/wow.min.js"></script>
-    <script src="js/nice-select.min.js"></script>
-    <script src="js/jquery.slicknav.min.js"></script>
-    <script src="js/jquery.magnific-popup.min.js"></script>
-    <script src="js/plugins.js"></script>
-    <script src="js/gijgo.min.js"></script>
+    <script src="~/Scripts/vendor/modernizr-3.5.0.min.js"></script>
+    <script src="~/Scripts/vendor/jquery-1.12.4.min.js"></script>
+    <script src="~/Scripts/popper.min.js"></script>
+    <script src="~/Scripts/bootstrap.min.js"></script>
+    <script src="~/Scripts/owl.carousel.min.js"></script>
+    <script src="~/Scripts/isotope.pkgd.min.js"></script>
+    <script src="~/Scripts/ajax-form.js"></script>
+    <script src="~/Scripts/waypoints.min.js"></script>
+    <script src="~/Scripts/jquery.counterup.min.js"></script>
+    <script src="~/Scripts/imagesloaded.pkgd.min.js"></script>
+    <script src="~/Scripts/scrollIt.js"></script>
+    <script src="~/Scripts/jquery.scrollUp.min.js"></script>
+    <script src="~/Scripts/wow.min.js"></script>
+    <script src="~/Scripts/nice-select.min.js"></script>
+    <script src="~/Scripts/jquery.slicknav.min.js"></script>
+    <script src="~/Scripts/jquery.magnific-popup.min.js"></script>
+    <script src="~/Scripts/plugins.js"></script>
+    <script src="~/Scripts/gijgo.min.js"></script>
 
 
 
     <!--contact js-->
-    <script src="js/contact.js"></script>
-    <script src="js/jquery.ajaxchimp.min.js"></script>
-    <script src="js/jquery.form.js"></script>
-    <script src="js/jquery.validate.min.js"></script>
-    <script src="js/mail-script.js"></script>
+    <script src="~/Scripts/contact.js"></script>
+    <script src="~/Scripts/jquery.ajaxchimp.min.js"></script>
+    <script src="~/Scripts/jquery.form.js"></script>
+    <script src="~/Scripts/jquery.validate.min.js"></script>
+    <script src="~/Scripts/mail-script.js"></script>
 
 
-    <script src="js/main.js"></script>
+    <script src="~/Scripts/main.js"></script>
 </body>
 
 </html>

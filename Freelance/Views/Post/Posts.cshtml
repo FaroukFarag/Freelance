@@ -1,10 +1,12 @@
-﻿<div class="job_listing_area plus_padding">
+﻿@model IEnumerable<Freelance.Core.Models.Post>
+
+<div class="job_listing_area plus_padding">
     <div class="container">
         @if (User.Identity.IsAuthenticated)
         {
             <div class="row" style="text-align: right;margin-bottom: 2%;">
                 <div class="col-lg-12">
-                    <a class="boxed-btn3" href="#">Post Job</a>
+                    <a class="boxed-btn3" href="@Url.Action("Create", "Post")">Post Job</a>
                 </div>
             </div>
         }
@@ -43,45 +45,65 @@
 
                 <div class="job_lists m-0">
                     <div class="row">
-                        <div class="col-lg-12 col-md-12">
-                            <div class="single_jobs white-bg d-flex justify-content-between">
-                                <div class="jobs_left d-flex align-items-center">
-                                    <div class="thumb">
-                                        <img src="~/Content/img/svg_icon/1.svg" alt="">
-                                    </div>
-                                    <div class="jobs_conetent">
-                                        <a href="job_details.html"><h4>Software Engineer</h4></a>
-                                        <div class="links_locat d-flex align-items-center">
-                                            <div class="location">
-                                                <p> <i class="fa fa-map-marker"></i> California, USA</p>
-                                            </div>
-                                            <div class="location">
-                                                <p> <i class="fa fa-clock-o"></i> Part-time</p>
+                        @foreach (var post in Model)
+                        {
+                            <div class="col-lg-12 col-md-12">
+                                <div class="single_jobs white-bg d-flex justify-content-between">
+                                    <div class="jobs_left d-flex align-items-center">
+                                        <div class="thumb">
+                                            <img src="~/Content/img/svg_icon/1.svg" alt="">
+                                        </div>
+                                        <div class="jobs_conetent">
+                                            <a href="job_details.html">
+                                                <h4>
+                                                    @if (post.JobType == Freelance.Core.Enums.JobType.Fixed)
+                                                    {
+                                                        <span>Fixed</span>
+                                                    }
+
+                                                    else
+                                                    {
+                                                        <span>Hourly</span>
+                                                    }
+                                                </h4>
+                                            </a>
+                                            <div class="links_locat d-flex align-items-center">
+                                                <div class="location">
+                                                    <p>Job Budget</p>
+                                                </div>
+                                                <div class="location">
+                                                    <p>@post.JobBudget</p>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
+                                    @if (User.IsInRole("Freelancer"))
+                                    {
+                                        <div class="jobs_right">
+                                            <div class="apply_now">
+                                                <a class="heart_mark" href="#"> <i class="fa fa-remove"></i> </a>
+                                                <a href="@Url.Action("Apply", "Post", new { id = post.Id })" class="boxed-btn3">Apply Now</a>
+                                            </div>
+                                            <div class="date">
+                                                <p>@post.CreationDate</p>
+                                            </div>
+                                        </div>
+                                    }
+                                    @if (User.IsInRole("Client"))
+                                    {
+                                        <div class="jobs_right">
+                                            <div class="apply_now">
+                                                <a href="job_details.html" class="genric-btn danger">Delete</a>
+                                                <a href="job_details.html" class="genric-btn success">Edit</a>
+                                            </div>
+                                            <div class="date">
+                                                <p>@post.CreationDate</p>
+                                            </div>
+                                        </div>
+                                    }
                                 </div>
-                                <div class="jobs_right">
-                                    <div class="apply_now">
-                                        <a class="heart_mark" href="#"> <i class="fa fa-remove"></i> </a>
-                                        <a href="job_details.html" class="boxed-btn3">Apply Now</a>
-                                    </div>
-                                    <div class="date">
-                                        <p>Date line: 31 Jan 2020</p>
-                                    </div>
-                                </div>
-                                @*<div class="jobs_right">
-                                    <div class="apply_now">
-
-                                        <a href="job_details.html" class="genric-btn danger">Delete</a>
-                                        <a href="job_details.html" class="genric-btn success">Edit</a>
-                                    </div>
-                                    <div class="date">
-                                        <p>Date line: 31 Jan 2020</p>
-                                    </div>
-                                </div>*@
-                            </div>
                         </div>
+                        }
                     </div>
                     <div class="row">
                         <div class="col-lg-12">

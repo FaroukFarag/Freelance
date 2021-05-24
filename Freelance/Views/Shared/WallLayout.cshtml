@@ -105,10 +105,12 @@
     </div>
     <!--/ bradcam_area  -->
 
+    @Html.Partial("_LoginPartial", new Freelance.Core.ViewModels.LoginViewModel())
+    @Html.Partial("_RegisterPartial", new Freelance.Core.ViewModels.RegisterViewModel())
+
     @RenderBody()
 
-    @Html.Partial("_LoginPartial")
-    @Html.Partial("_RegisterPartial")
+
 
     <!-- footer start -->
     <footer class="footer">

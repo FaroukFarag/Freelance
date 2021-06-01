@@ -1,25 +1,37 @@
-﻿<div class="col-lg-9 col-md-9" style=" background: white;padding: 25px;">
-    <form>
+﻿@model Freelance.Core.ViewModels.PostFormViewModel
+
+<div class="col-lg-9 col-md-9" style=" background: white;padding: 25px;">
+    @using (Html.BeginForm("Edit", "Post", new { id = Model.Id }, FormMethod.Post, new { role = "form" }))
+    {
+        @Html.AntiForgeryToken()
+        @Html.ValidationSummary("", new { @class = "text-danger" })
         <div class="form-group">
-            <label for="exampleInputEmail1">Title</label>
-            <input type="text" class="form-control" placeholder="Job Title">
+            <label>Job Type</label>
+            @Html.DropDownListFor(m => m.JobType, new List<SelectListItem>
+            {
+                new SelectListItem { Text = "Fixed", Value = "1" },
+                new SelectListItem { Text = "Hourly", Value = "2" }
+            }, "Select Type", new { @class = "form-select" })
+            @*<select name="JobType" class="form-select" aria-label="Default select example">
+                    <option selected disabled>Select Type</option>
+                    <option value="1">Fixed</option>
+                    <option value="2">Hourly</option>
+                </select>*@
         </div>
         <div class="form-group">
-            <label for="exampleInputEmail1">Description</label><br>
-            <textarea wrap="hard" style="width: 100%"></textarea>
+            @Html.LabelFor(m => m.JobBudget)
+            @Html.TextBoxFor(m => m.JobBudget, new { @class = "form-control", @placeholder = "Enter job description" })
+            @Html.ValidationMessageFor(m => m.JobBudget)
         </div>
         <div class="form-group">
-            <label for="exampleInputEmail1">Budget</label>
-            <input type="text" class="form-control" placeholder="Job Budget">
+            @Html.LabelFor(m => m.JobDescription)
+            @Html.TextAreaFor(m => m.JobDescription, new { @class = "form-control", @placeholder = "Enter job description" })
+            @Html.ValidationMessageFor(m => m.JobDescription)
+
+            @Html.HiddenFor(m => m.IsAccepted)
         </div>
         <div class="form-group">
-            <label for="exampleInputPassword1">Job Type</label>
-            <select class="form-select" aria-label="Default select example">
-                <option selected disabled>Select Type</option>
-                <option value="1">Fixed</option>
-                <option value="2">Hourly</option>
-            </select>
+            <button type="submit" class="btn btn-default">Submit</button>
         </div>
-        <button type="submit" class="btn btn-primary" style="width :100%; margin-top: 10px;">Post</button>
-    </form>
+    }
 </div>

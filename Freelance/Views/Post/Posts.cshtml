@@ -1,8 +1,10 @@
-﻿@model IEnumerable<Freelance.Core.Models.Post>
+﻿@using Microsoft.AspNet.Identity;
+
+@model Freelance.Core.ViewModels.PostsViewModel
 
 <div class="job_listing_area plus_padding">
     <div class="container">
-        @if (User.Identity.IsAuthenticated)
+        @if (!User.IsInRole("Freelancer") && User.Identity.IsAuthenticated)
         {
             <div class="row" style="text-align: right;margin-bottom: 2%;">
                 <div class="col-lg-12">
@@ -45,28 +47,19 @@
 
                 <div class="job_lists m-0">
                     <div class="row">
-                        @foreach (var post in Model)
+                        @foreach (var post in Model.Posts)
                         {
                             <div class="col-lg-12 col-md-12">
                                 <div class="single_jobs white-bg d-flex justify-content-between">
                                     <div class="jobs_left d-flex align-items-center">
+                                        <div><a href="@Url.Action("Details", "Post", new { id = post.Id })" class="genric-btn success">View Post</a></div>
                                         <div class="thumb">
-                                            <img src="~/Content/img/svg_icon/1.svg" alt="">
+                                            <img src="@Url.Content(@post.Client.PhotoPath)" style="width: 229px; height: 100px" alt="">
                                         </div>
                                         <div class="jobs_conetent">
-                                            <a href="job_details.html">
-                                                <h4>
-                                                    @if (post.JobType == Freelance.Core.Enums.JobType.Fixed)
-                                                    {
-                                                        <span>Fixed</span>
-                                                    }
-
-                                                    else
-                                                    {
-                                                        <span>Hourly</span>
-                                                    }
-                                                </h4>
-                                            </a>
+                                            <h4>
+                                                <span>@(post.JobType == Freelance.Core.Enums.JobType.Fixed? "Fixed": "Hourly")</span>
+                                            </h4>
                                             <div class="links_locat d-flex align-items-center">
                                                 <div class="location">
                                                     <p>Job Budget</p>
@@ -79,22 +72,22 @@
                                     </div>
                                     @if (User.IsInRole("Freelancer"))
                                     {
-                                        <div class="jobs_right">
-                                            <div class="apply_now">
-                                                <a class="heart_mark" href="#"> <i class="fa fa-remove"></i> </a>
-                                                <a href="@Url.Action("Apply", "Post", new { id = post.Id })" class="boxed-btn3">Apply Now</a>
-                                            </div>
-                                            <div class="date">
-                                                <p>@post.CreationDate</p>
-                                            </div>
-                                        </div>
+                                <div class="jobs_right">
+                                    <div class="apply_now">
+                                        @*<a class="heart_mark" href="#"> <i class="fa fa-remove"></i> </a>*@
+                                        <button data-freelancer-id="@User.Identity.GetUserId()" data-post-id="@post.Id" class="boxed-btn3 js-toggle-applying">@(Model.Proposals.Contains(@User.Identity.GetUserId()) ? "Applied" : "Apply Now")</button>
+                                    </div>
+                                    <div class="date">
+                                        <p>@post.CreationDate</p>
+                                    </div>
+                                </div>
                                     }
-                                    @if (User.IsInRole("Client"))
+                                    @if (User.IsInRole("Client") || User.IsInRole("Admin"))
                                     {
                                         <div class="jobs_right">
                                             <div class="apply_now">
-                                                <a href="job_details.html" class="genric-btn danger">Delete</a>
-                                                <a href="job_details.html" class="genric-btn success">Edit</a>
+                                                <button data-post-id="@post.Id" class="genric-btn danger js-delete-post">Delete</button>
+                                                <a href="@Url.Action("Edit", "Post", new { id = post.Id })" class="genric-btn success">Edit</a>
                                             </div>
                                             <div class="date">
                                                 <p>@post.CreationDate</p>
@@ -102,7 +95,7 @@
                                         </div>
                                     }
                                 </div>
-                        </div>
+                            </div>
                         }
                     </div>
                     <div class="row">
@@ -123,3 +116,79 @@
         </div>
     </div>
 </div>
+
+@section scripts
+{
+    <script>
+        $(document).ready(function () {
+            $(".js-toggle-applying").click(function (e) {
+                var link = $(e.target);
+
+                if (link.text() === "Apply Now") {
+                    $.post("/api/proposal/apply", { freelancerId: link.attr("data-freelancer-id"), postId: link.attr("data-post-id") })
+                        .done(function () {
+                            console.log("POST");
+                            link.text("Applied");
+                        })
+                        .fail(function () {
+                            alert("Something failed!");
+                        });
+                }
+
+                else {
+                    $.ajax({
+                        url: "/api/proposal",
+                        method: "DELETE",
+                        data: { freelancerId: link.attr("data-freelancer-id"), postId: link.attr("data-post-id") },
+                    })
+                        .done(function () {
+                            console.log("DELETE");
+                            link.text("Apply Now");
+                        })
+                        .fail(function () {
+                            alert("Something failed!");
+                        });
+                }
+            });
+
+            $(".js-delete-post").click(function (e) {
+                var link = $(e.target);
+
+                e.preventDefault();
+
+                bootbox.dialog({
+                    title: 'Confirm',
+                    message: '<p>Are you sure you want to delete this post?</p>',
+                    size: 'large',
+                    onEscape: true,
+                    backdrop: false,
+                    buttons: {
+                        no: {
+                            label: 'No',
+                            className: 'btn-default',
+                            callback: function () {
+                                bootbox.hideAll();
+                            }
+                        },
+                        yes: {
+                            label: 'Yes',
+                            className: 'btn-danger',
+                            callback: function () {
+                                $.ajax({
+                                    url: "/api/post/" + link.attr("data-post-id"),
+                                    method: "DELETE"
+                                })
+                                    .done(function () {
+                                        link.parents("div.col-lg-12.col-md-12").remove();
+                                    })
+                                    .fail(function () {
+                                        alert("Something failed!");
+                                    });
+                            }
+                        }
+                    }
+                });
+            });
+        });
+    </script>
+}

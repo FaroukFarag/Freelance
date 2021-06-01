@@ -13,7 +13,7 @@ namespace Freelance.Migrations
         
         string IMigrationMetadata.Id
         {
-            get { return "202105231809529_AddPostAndProposal"; }
+            get { return "202105311749062_AddPostAndProposal"; }
         }
         
         string IMigrationMetadata.Source

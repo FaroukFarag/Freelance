@@ -1,4 +1,8 @@
-﻿<div class="job_details_area">
+﻿@using Microsoft.AspNet.Identity;
+
+@model Freelance.Core.ViewModels.PostDetailsViewModel
+
+<div class="job_details_area">
     <div class="container">
         <div class="row">
             <div class="col-lg-8">
@@ -6,84 +10,34 @@
                     <div class="single_jobs white-bg d-flex justify-content-between">
                         <div class="jobs_left d-flex align-items-center">
                             <div class="thumb">
-                                <img src="img/svg_icon/1.svg" alt="">
+                                <img src="@Url.Content(Model.Client.PhotoPath)" style="width:229px; height: 100px" alt="">
                             </div>
                             <div class="jobs_conetent">
                                 <a href="#"><h4>Software Engineer</h4></a>
                                 <div class="links_locat d-flex align-items-center">
                                     <div class="location">
-                                        <p> <i class="fa fa-map-marker"></i> California, USA</p>
-                                    </div>
-                                    <div class="location">
-                                        <p> <i class="fa fa-clock-o"></i> Part-time</p>
+                                        <p> <i class="fa fa-clock-o"></i>@(Model.JobType == Freelance.Core.Enums.JobType.Fixed? "Fixed": "Hourly")</p>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <div class="jobs_right">
-                            <div class="apply_now">
-                                <a class="heart_mark" href="#"> <i class="fa fa-save"></i> </a>
+                        @if (User.IsInRole("Freelancer"))
+                        {
+                            <div class="jobs_right">
+                                <div class="apply_now">
+                                    @*<a class="heart_mark" href="#"> <i class="fa fa-remove"></i> </a>*@
+                                    <button data-freelancer-id="@User.Identity.GetUserId()" data-post-id="@Model.Id" class="boxed-btn3 js-toggle-applying">@(Model.Proposals.Contains(@User.Identity.GetUserId()) ? "Applied" : "Apply Now")</button>
+                                </div>
                             </div>
-                        </div>
+                        }
                     </div>
                 </div>
                 <div class="descript_wrap white-bg">
                     <div class="single_wrap">
                         <h4>Job description</h4>
-                        <p>There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which don't look even slightly believable. If you are going to use a passage of Lorem Ipsum, you need to be sure there isn't anything embarrassing.</p>
-                        <p>Variations of passages of lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which don't look even slightly believable. If you are going to use a passage of Lorem Ipsum, you need to be sure there isn't anything embarrassing.</p>
+                        <p>@Model.JobDescription</p>
+
                     </div>
-                    <div class="single_wrap">
-                        <h4>Responsibility</h4>
-                        <ul>
-                            <li>
-                                The applicants should have experience in the following areas.
-                            </li>
-                            <li>Have sound knowledge of commercial activities.</li>
-                            <li>Leadership, analytical, and problem-solving abilities.</li>
-                            <li>Should have vast knowledge in IAS/ IFRS, Company Act, Income Tax, VAT.</li>
-                        </ul>
-                    </div>
-                    <div class="single_wrap">
-                        <h4>Qualifications</h4>
-                        <ul>
-                            <li>
-                                The applicants should have experience in the following areas.
-                            </li>
-                            <li>Have sound knowledge of commercial activities.</li>
-                            <li>Leadership, analytical, and problem-solving abilities.</li>
-                            <li>Should have vast knowledge in IAS/ IFRS, Company Act, Income Tax, VAT.</li>
-                        </ul>
-                    </div>
-                    <div class="single_wrap">
-                        <h4>Benefits</h4>
-                        <p>There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which don't look even slightly believable. If you are going to use a passage of Lorem Ipsum, you need to be sure there isn't anything embarrassing.</p>
-                    </div>
-                </div>
-                <div class="apply_job_form white-bg">
-                    <h4>Apply for the job</h4>
-                    <form action="#">
-                        <div class="row">
-                            <div class="col-md-12">
-                                <div class="input-group">
-                                    <div class="input-group-prepend">
-                                        <button type="button" id="inputGroupFileAddon03">
-                                            <i class="fa fa-cloud-upload" aria-hidden="true"></i>
-                                        </button>
-                                    </div>
-                                    <div class="custom-file">
-                                        <input type="file" class="custom-file-input" id="inputGroupFile03" aria-describedby="inputGroupFileAddon03">
-                                        <label class="custom-file-label" for="inputGroupFile03">Upload Proposal</label>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-12">
-                                <div class="submit_btn">
-                                    <button class="boxed-btn3 w-100" type="submit">Apply Now</button>
-                                </div>
-                            </div>
-                        </div>
-                    </form>
                 </div>
             </div>
             <div class="col-lg-4">
@@ -93,52 +47,52 @@
                     </div>
                     <div class="job_content">
                         <ul>
-                            <li>Client: <span>Name</span></li>
-                            <li>Creation Date: <span>12 Nov, 2019</span></li>
-                            <li>Job Budget: <span>50k - 120k/y</span></li>
-                            <li>Job Type: <span> Full-time</span></li>
-                            <li>Submited Proposal: <span>2</span></li>
+                            <li>Client: <span>@Model.ClientName</span></li>
+                            <li>Creation Date: <span>@Model.CreationDate</span></li>
+                            <li>Job Budget: <span>@Model.JobBudget</span></li>
+                            <li>Job Type: <span>@(Model.JobType == Freelance.Core.Enums.JobType.Fixed? "Fixed": "Hourly")</span></li>
+                            <li>Submited Proposal: <span>@Model.Proposals.Count()</span></li>
                         </ul>
-                    </div>
-                </div>
-                <div class="share_wrap d-flex">
-                    <span>Rate The Job:</span>
-                    <span class="fa fa-star checked" style="color: orange"></span>
-                    <span class="fa fa-star checked" style="color: orange"></span>
-                    <span class="fa fa-star checked" style="color: orange"></span>
-                    <span class="fa fa-star"></span>
-                    <span class="fa fa-star"></span>
-                </div>
-                <div class="job_location_wrap">
-                    <div class="job_lok_inner">
-                        <div id="map" style="height: 200px;"></div>
-                        <script>
-                            function initMap() {
-                                var uluru = { lat: -25.363, lng: 131.044 };
-                                var grayStyles = [
-                                    {
-                                        featureType: "all",
-                                        stylers: [
-                                            { saturation: -90 },
-                                            { lightness: 50 }
-                                        ]
-                                    },
-                                    { elementType: 'labels.text.fill', stylers: [{ color: '#ccdee9' }] }
-                                ];
-                                var map = new google.maps.Map(document.getElementById('map'), {
-                                    center: { lat: -31.197, lng: 150.744 },
-                                    zoom: 9,
-                                    styles: grayStyles,
-                                    scrollwheel: false
-                                });
-                            }
-
-                        </script>
-                        <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDpfS1oRGreGSBU5HHjMmQ3o5NLw7VdJ6I&callback=initMap"></script>
-
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+@section scripts
+{
+    <script>
+        $(document).ready(function () {
+            $(".js-toggle-applying").click(function (e) {
+                var link = $(e.target);
+
+                if (link.text() === "Apply Now") {
+                    $.post("/api/proposal/apply", { freelancerId: link.attr("data-freelancer-id"), postId: link.attr("data-post-id") })
+                        .done(function () {
+                            console.log("POST");
+                            link.text("Applied");
+                        })
+                        .fail(function () {
+                            alert("Something failed!");
+                        });
+                }
+
+                else {
+                    $.ajax({
+                        url: "/api/proposal",
+                        method: "DELETE",
+                        data: { freelancerId: link.attr("data-freelancer-id"), postId: link.attr("data-post-id") },
+                    })
+                        .done(function () {
+                            console.log("DELETE");
+                            link.text("Apply Now");
+                        })
+                        .fail(function () {
+                            alert("Something failed!");
+                        });
+                }
+            });
+        });
+    </script>
+}

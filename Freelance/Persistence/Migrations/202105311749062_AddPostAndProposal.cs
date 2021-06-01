@@ -30,10 +30,11 @@
                     {
                         FreelancerId = c.String(nullable: false, maxLength: 128),
                         PostId = c.Int(nullable: false),
+                        IsAccepted = c.Boolean(nullable: false),
                     })
                 .PrimaryKey(t => new { t.FreelancerId, t.PostId })
-                .ForeignKey("dbo.AspNetUsers", t => t.FreelancerId, cascadeDelete: true)
-                .ForeignKey("dbo.Posts", t => t.PostId, cascadeDelete: true)
+                .ForeignKey("dbo.AspNetUsers", t => t.FreelancerId)
+                .ForeignKey("dbo.Posts", t => t.PostId)
                 .Index(t => t.FreelancerId)
                 .Index(t => t.PostId);
             

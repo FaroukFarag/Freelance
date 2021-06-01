@@ -22,6 +22,10 @@ namespace Freelance.Persistence.EntityConfigurations
             Property(p => p.JobDescription)
                 .IsRequired()
                 .HasMaxLength(255);
+
+            HasOptional(p => p.Proposals)
+                .WithOptionalDependent()
+                .WillCascadeOnDelete(true);
         }
     }
 }

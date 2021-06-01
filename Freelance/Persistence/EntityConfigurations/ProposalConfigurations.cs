@@ -14,6 +14,14 @@ namespace Freelance.Persistence.EntityConfigurations
 
             Property(p => p.PostId)
                 .IsRequired();
+            
+            HasRequired(p => p.Freelancer)
+                .WithMany()
+                .WillCascadeOnDelete(false);
+
+            HasRequired(p => p.Post)
+                .WithMany(p => p.Proposals)
+                .WillCascadeOnDelete(false);
         }
     }
 }

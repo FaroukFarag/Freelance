@@ -13,7 +13,7 @@
                                 <div class="single_jobs white-bg d-flex justify-content-between">
                                     <div class="jobs_left d-flex align-items-center">
                                         <div class="thumb">
-                                            <img src="~/Content/img/svg_icon/1.svg" alt="">
+                                            <img src="@Url.Content(@post.Client.PhotoPath)" style="width: 229px; height: 100px" alt="">
                                         </div>
                                         <div class="jobs_conetent">
                                             <a href="job_details.html">
@@ -41,8 +41,8 @@
                                     </div>
                                     <div class="jobs_right">
                                         <div class="apply_now">
-                                            <a href="job_details.html" class="genric-btn danger">Refus</a>
-                                            <a href="@Url.Action("Accept", "Post", new { id = post.Id })" class="genric-btn success">Accept</a>
+                                            <button data-post-id="@post.Id" class="genric-btn danger js-reject">Reject</button>
+                                            <button data-post-id="@post.Id" class="genric-btn success js-accept">Accept</button>
                                         </div>
                                         <div class="date">
                                             <p>@post.CreationDate</p>
@@ -70,3 +70,39 @@
         </div>
     </div>
 </div>
+
+@section scripts
+{
+    <script>
+        $(document).ready(function () {
+            $(".js-accept").click(function (e) {
+                var link = $(e.target);
+
+                $.post("/api/post", { postId: link.attr("data-post-id") })
+                    .done(function () {
+                        link.parents('div.col-lg-12.col-md-12').remove();
+                    })
+                    .fail(function () {
+                        alert("Something failed!");
+                    });
+
+            
+            });
+
+            $(".js-reject").click(function (e) {
+                var link = $(e.target);
+
+                $.ajax({
+                    url: "/api/post/" + link.attr("data-post-id"),
+                    method: "DELETE"
+                })
+                    .done(function () {
+                        link.parents('div.col-lg-12.col-md-12').remove();
+                    })
+                    .fail(function () {
+                        alert("Something failed!");
+                    });
+            });
+        });
+    </script>
+}

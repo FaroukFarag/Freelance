@@ -20,7 +20,10 @@
                             <p>@user.UserName</p>
                         </div>
                         <div style="margin-top: 5%;">
-                            <a href="job_details.html" class="genric-btn danger">Delete</a>
+                            @using (Html.BeginForm("Delete", "Account", new { id = user.Id }, FormMethod.Post))
+                            {
+                                <button type="submit" class="genric-btn danger">Delete</button>
+                            }
                         </div>
                     </div>
                 </div>

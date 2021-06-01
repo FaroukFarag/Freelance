@@ -32,9 +32,8 @@
     <!--[if lte IE 9]>
             <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience and security.</p>
         <![endif]-->
-
     <!-- header-start -->
-    <header >
+    <header>
         <div class="header-area ">
             <div id="sticky-header" class="main-header-area" style="background: #001D38">
                 <div class="container-fluid ">
@@ -79,21 +78,20 @@
         </div>
     </header>
     <!-- header-end -->
-
     <!--/ bradcam_area  -->
 
     <div class="job_details_area" style="height: auto;padding-bottom: 15px; padding-top: 115px;">
         <div class="container" style="height: auto;">
             <div class="row" style="height: auto;">
                 <div class="col-lg-3 col-md-3" style="height: auto;background: white;border-right: 5px solid #F5F7FA;">
-                        
-                        <ul style="margin-top: 30%;margin-left: 10%;">
-                            <li style="margin-bottom: 5%;"><a href="@Url.Action("Profile", "Account")" style="text-decoration: underline">Profile</a></li>
-                            <li style="margin-bottom: 5%;"><a href="@Url.Action("Create", "Post")" style="text-decoration: underline">Create New Post</a></li>
-                            <li style="margin-bottom: 5%;"><a href="@Url.Action("Posts", "Post")" style="text-decoration: underline">My Posts</a></li>
-                            <li style="margin-bottom: 5%;"><a href="@Url.Action("Proposals", "Post")" style="text-decoration: underline">Received Proposals</a></li>
-                            <li style="margin-bottom: 5%;"><a href="@Url.Action("Edit", "Post")" style="text-decoration: underline">Update Profile</a></li>
-                        </ul>
+
+                    <ul style="margin-top: 30%;margin-left: 10%;">
+                        <li style="margin-bottom: 5%;"><a href="@Url.Action("Profile", "Account")" style="text-decoration: underline">Profile</a></li>
+                        <li style="margin-bottom: 5%;"><a href="@Url.Action("Create", "Post")" style="text-decoration: underline">Create New Post</a></li>
+                        <li style="margin-bottom: 5%;"><a href="@Url.Action("Posts", "Post")" style="text-decoration: underline">My Posts</a></li>
+                        <li style="margin-bottom: 5%;"><a href="@Url.Action("Proposals", "Proposal")" style="text-decoration: underline">Received Proposals</a></li>
+                        <li style="margin-bottom: 5%;"><a href="@Url.Action("Edit", "Account")" style="text-decoration: underline">Update Profile</a></li>
+                    </ul>
                 </div>
                 <div class="col-lg-9 col-md-9" style="background: white; padding: 5%; height: 50%;">
                     @RenderBody()
@@ -182,8 +180,10 @@
                                 <input type="text" placeholder="Enter your mail">
                                 <button type="submit">Subscribe</button>
                             </form>
-                            <p class="newsletter_text">Esteem spirit temper too say adieus who direct esteem esteems
-                                luckily.</p>
+                            <p class="newsletter_text">
+                                Esteem spirit temper too say adieus who direct esteem esteems
+                                luckily.
+                            </p>
                         </div>
                     </div>
                 </div>
@@ -196,8 +196,9 @@
                     <div class="col-xl-12">
                         <p class="copy_right text-center">
                             <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
-Copyright &copy;<script>document.write(new Date().getFullYear());</script> All rights reserved | This template is made with <i class="fa fa-heart-o" aria-hidden="true"></i> by <a href="https://colorlib.com" target="_blank">Colorlib</a>
-<!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
+                            Copyright &copy;
+                            <script>document.write(new Date().getFullYear());</script> All rights reserved | This template is made with <i class="fa fa-heart-o" aria-hidden="true"></i> by <a href="https://colorlib.com" target="_blank">Colorlib</a>
+                            <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
                         </p>
                     </div>
                 </div>
@@ -205,7 +206,6 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All r
         </div>
     </footer>
     <!--/ footer end  -->
-
     <!-- link that opens popup -->
     <!-- JS here -->
     <script src="~/Scripts/vendor/modernizr-3.5.0.min.js"></script>
@@ -238,6 +238,10 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All r
 
 
     <script src="~/Scripts/main.js"></script>
+
+    <script src="~/Scripts/bootbox.min.js"></script>
+
+    @RenderSection("scripts", required: false)
 </body>
 
 </html>

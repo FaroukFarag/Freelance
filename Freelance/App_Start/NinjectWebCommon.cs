@@ -16,6 +16,8 @@ namespace Freelance.App_Start
     using Freelance.Core.Models;
     using Microsoft.AspNet.Identity.Owin;
     using Microsoft.AspNet.Identity.EntityFramework;
+    using System.Web.Http;
+    using Ninject.Web.WebApi;
 
     public static class NinjectWebCommon 
     {
@@ -58,6 +60,8 @@ namespace Freelance.App_Start
                     .SelectAllClasses()
                     .BindDefaultInterface();
                 });
+
+                GlobalConfiguration.Configuration.DependencyResolver = new NinjectDependencyResolver(kernel);
 
                 return kernel;
             }

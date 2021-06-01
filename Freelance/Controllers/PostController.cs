@@ -4,7 +4,9 @@ using Freelance.Core.ViewModels;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Web;
 using System.Web.Mvc;
 
@@ -36,7 +38,30 @@ namespace Freelance.Controllers
         [AllowAnonymous]
         public ActionResult Posts()
         {
-            return View(_unitOfWork.Posts.ListPosts());
+            IEnumerable<Post> posts = new List<Post>();
+
+            if (User.IsInRole("Admin") || User.IsInRole("Freelancer"))
+            {
+                posts = _unitOfWork.Posts.ListPosts();
+            }
+
+            else if(User.IsInRole("Client"))
+            {
+                posts = _unitOfWork.Posts.ClientPosts(User.Identity.GetUserId());
+            }
+
+            else
+            {
+                posts = _unitOfWork.Posts.ListPosts();
+            }
+
+            var model = new PostsViewModel
+            {
+                Posts = posts,
+                Proposals = _unitOfWork.Proposals.PostsProposals().ToLookup(p => p.FreelancerId)
+            };
+
+            return View(model);
         }
 
         public ActionResult Create()
@@ -46,7 +71,7 @@ namespace Freelance.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(PostViewModel model)
+        public ActionResult Create(PostFormViewModel model)
         {
             if(!ModelState.IsValid)
             {
@@ -72,42 +97,88 @@ namespace Freelance.Controllers
             return RedirectToAction("Posts");
         }
 
-        public ActionResult Edit()
+        public ActionResult Edit(int id)
         {
-            return View();
+            var post = _unitOfWork.Posts.GetPost(id);
+
+            if (post == null)
+            {
+                ModelState.AddModelError("", "Post not found");
+
+                return new HttpStatusCodeResult(HttpStatusCode.NotFound);
+            }
+
+            var model = new PostFormViewModel
+            {
+                Id = post.Id,
+                JobType = post.JobType,
+                JobBudget = post.JobBudget,
+                JobDescription = post.JobDescription,
+                IsAccepted = post.IsAccepted
+            };
+
+            return View(model);
         }
 
-        public ActionResult Details()
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Edit(PostFormViewModel model)
         {
-            return View();
-        }
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
 
-        public ActionResult PostsRequests()
-        {
-            return View(_unitOfWork.Posts.PostsRequests());
-        }
-
-        public ActionResult Accept(int id)
-        {
-            _unitOfWork.Posts.Accept(id);
-            _unitOfWork.Complete();
-
-            return RedirectToAction("PostsRequests");
-        }
-
-        public ActionResult Apply(int id)
-        {
             var userId = User.Identity.GetUserId();
+            var user = UserManager.Users.Single(u => u.Id == userId);
+            var post = new Post
+            {
+                Id = model.Id,
+                ClientName = user.FirstName + " " + user.LastName,
+                JobType = model.JobType,
+                JobBudget = model.JobBudget,
+                CreationDate = DateTime.Now,
+                JobDescription = model.JobDescription,
+                IsAccepted = model.IsAccepted,
+                ClientId = userId
 
-            _unitOfWork.Proposals.Add(userId, id);
+            };
+
+            _unitOfWork.Posts.Update(post);
             _unitOfWork.Complete();
 
             return RedirectToAction("Posts");
         }
 
-        public ActionResult Proposals()
+        public ActionResult Details(int id)
         {
-            return View(_unitOfWork.Proposals.PostsProposals());
+            var post = _unitOfWork.Posts.GetPost(id);
+
+            if (post == null)
+            {
+                ModelState.AddModelError("", "Post not found");
+
+                return new HttpStatusCodeResult(HttpStatusCode.NotFound);
+            }
+
+            var model = new PostDetailsViewModel
+            {
+                Id = post.Id,
+                ClientName = post.ClientName,
+                JobType = post.JobType,
+                JobBudget = post.JobBudget,
+                CreationDate = post.CreationDate,
+                JobDescription = post.JobDescription,
+                Client = post.Client,
+                Proposals = _unitOfWork.Proposals.PostsProposals().ToLookup(p => p.FreelancerId)
+            };
+
+            return View(model);
+        }
+
+        public ActionResult PostsRequests()
+        {
+            return View(_unitOfWork.Posts.PostsRequests());
         }
     }
 }

@@ -11,6 +11,7 @@ using Microsoft.Owin.Security;
 using Freelance.Core.ViewModels;
 using System.IO;
 using Freelance.Core.Models;
+using System.Net;
 
 namespace Freelance.Controllers
 {
@@ -437,9 +438,101 @@ namespace Freelance.Controllers
         }
 
         [AllowAnonymous]
+        public ActionResult Edit()
+        {
+            var userId = User.Identity.GetUserId();
+
+            var user = UserManager.FindById(userId);
+            
+            if(user == null)
+            {
+                ModelState.AddModelError("", "User not found");
+
+                return View();
+            }
+
+            var model = new EditUserViewModel
+            {
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                PhotoPath = user.PhotoPath,
+                Email = user.Email,
+                PhoneNumber = user.PhoneNumber
+            };
+
+            return View(model);
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> Edit(EditUserViewModel model)
+        {
+            var userId = User.Identity.GetUserId();
+
+            var user = await UserManager.FindByIdAsync(userId);
+
+            if (user == null)
+            {
+                ModelState.AddModelError("", "User not found");
+
+                return new HttpStatusCodeResult(HttpStatusCode.NotFound);
+            }
+
+            string oldPhoto = Request.MapPath(model.PhotoPath);
+            string fileName = Path.GetFileNameWithoutExtension(model.PhotoFile.FileName);
+            string extension = Path.GetExtension(model.PhotoFile.FileName);
+
+            fileName = fileName + DateTime.Now.ToString("yymmssfff") + extension;
+
+            model.PhotoPath = "~/Photos/" + fileName;
+
+            fileName = Path.Combine(Server.MapPath("~/Photos"), fileName);
+
+            model.PhotoFile.SaveAs(fileName);
+
+            user.FirstName = model.FirstName;
+            user.LastName = model.LastName;
+            user.PhotoPath = model.PhotoPath;
+            user.Email = model.Email;
+            user.UserName = model.Email;
+            user.PhoneNumber = model.PhoneNumber;
+
+            var result = await UserManager.UpdateAsync(user);
+
+            if(result.Succeeded)
+            {
+                if (System.IO.File.Exists(oldPhoto))
+                {
+                    System.IO.File.Delete(oldPhoto);
+                }
+
+                return RedirectToAction("Profile", user);
+            }
+
+            return View(model);
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> Delete(string id)
+        {
+            var user = await UserManager.FindByIdAsync(id);
+
+            if (user == null)
+            {
+                ModelState.AddModelError("", "User not found");
+
+                return new HttpStatusCodeResult(HttpStatusCode.NotFound);
+            }
+
+            var result = await UserManager.DeleteAsync(user);
+
+            return RedirectToAction("Users");
+        }
+
+        [AllowAnonymous]
         public ActionResult Users()
         {
-            var model = UserManager.Users.ToList();
+            var userId = User.Identity.GetUserId();
+            var model = UserManager.Users.Where(u => u.Id != userId).ToList();
 
             return View(model);
         }

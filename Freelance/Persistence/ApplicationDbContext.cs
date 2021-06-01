@@ -25,6 +25,11 @@ namespace Freelance.Persistence
             modelBuilder.Configurations.Add(new PostConfigurations());
             modelBuilder.Configurations.Add(new ProposalConfigurations());
 
+            //modelBuilder.Entity<ApplicationUser>()
+            //    .HasOptional(u => u.Proposal)
+            //    .WithRequired(p => p.Freelancer)
+            //    .WillCascadeOnDelete(false);
+
             base.OnModelCreating(modelBuilder);
         }
     }

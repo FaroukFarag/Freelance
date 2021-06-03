@@ -1,4 +1,5 @@
 ﻿using Freelance.Core;
+using PagedList;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,9 +17,10 @@ namespace Freelance.Controllers
             _unitOfWork = unitOfWork;
         }
 
-        public ActionResult Proposals()
+        public ActionResult Proposals(int? page)
         {
-            var model = _unitOfWork.Proposals.PostsProposals();
+            var model = _unitOfWork.Proposals.PostsProposals().ToPagedList(page ?? 1, 1);
+
             return View(model);
         }
     }

@@ -17,11 +17,11 @@ namespace Freelance.Persistence.EntityConfigurations
             
             HasRequired(p => p.Freelancer)
                 .WithMany()
-                .WillCascadeOnDelete(false);
+                .WillCascadeOnDelete(true);
 
             HasRequired(p => p.Post)
                 .WithMany(p => p.Proposals)
-                .WillCascadeOnDelete(false);
+                .WillCascadeOnDelete(true);
         }
     }
 }

@@ -12,6 +12,8 @@ using Freelance.Core.ViewModels;
 using System.IO;
 using Freelance.Core.Models;
 using System.Net;
+using PagedList;
+using Freelance.Core;
 
 namespace Freelance.Controllers
 {
@@ -20,9 +22,11 @@ namespace Freelance.Controllers
     {
         private ApplicationSignInManager _signInManager;
         private ApplicationUserManager _userManager;
+        private IUnitOfWork _unitOfWork;
 
-        public AccountController()
+        public AccountController(IUnitOfWork unitOfWork)
         {
+            _unitOfWork = unitOfWork;
         }
 
         public AccountController(ApplicationUserManager userManager, ApplicationSignInManager signInManager)
@@ -523,16 +527,32 @@ namespace Freelance.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.NotFound);
             }
 
+            if (UserManager.IsInRole(user.Id, "Client"))
+            {
+                _unitOfWork.Posts.RemoveClientPosts(user.Id);
+                _unitOfWork.Complete();
+            }
+
+
+            var photoPath = Request.MapPath(user.PhotoPath);
             var result = await UserManager.DeleteAsync(user);
+
+            if(result.Succeeded)
+            {
+                if (System.IO.File.Exists(photoPath))
+                {
+                    System.IO.File.Delete(photoPath);
+                }
+            }
 
             return RedirectToAction("Users");
         }
 
         [AllowAnonymous]
-        public ActionResult Users()
+        public ActionResult Users(int? page)
         {
             var userId = User.Identity.GetUserId();
-            var model = UserManager.Users.Where(u => u.Id != userId).ToList();
+            var model = UserManager.Users.Where(u => u.Id != userId).ToList().ToPagedList(page ?? 1, 1);
 
             return View(model);
         }

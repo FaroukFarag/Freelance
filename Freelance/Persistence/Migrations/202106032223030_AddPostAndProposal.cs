@@ -12,7 +12,7 @@
                 c => new
                     {
                         Id = c.Int(nullable: false, identity: true),
-                        ClientName = c.String(nullable: false),
+                        JobTitle = c.String(),
                         JobType = c.Int(nullable: false),
                         JobBudget = c.Double(nullable: false),
                         CreationDate = c.DateTime(nullable: false),
@@ -33,8 +33,8 @@
                         IsAccepted = c.Boolean(nullable: false),
                     })
                 .PrimaryKey(t => new { t.FreelancerId, t.PostId })
-                .ForeignKey("dbo.AspNetUsers", t => t.FreelancerId)
-                .ForeignKey("dbo.Posts", t => t.PostId)
+                .ForeignKey("dbo.AspNetUsers", t => t.FreelancerId, cascadeDelete: true)
+                .ForeignKey("dbo.Posts", t => t.PostId, cascadeDelete: true)
                 .Index(t => t.FreelancerId)
                 .Index(t => t.PostId);
             

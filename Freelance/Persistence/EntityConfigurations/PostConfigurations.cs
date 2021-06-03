@@ -7,9 +7,6 @@ namespace Freelance.Persistence.EntityConfigurations
     {
         public PostConfigurations()
         {
-            Property(p => p.ClientName)
-                .IsRequired();
-
             Property(p => p.JobType)
                 .IsRequired();
 

@@ -1,8 +1,11 @@
-﻿using Freelance.Core;
+﻿using AutoMapper;
+using Freelance.App_Start;
+using Freelance.Core;
 using Freelance.Core.Models;
 using Freelance.Core.ViewModels;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
+using PagedList;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,10 +20,12 @@ namespace Freelance.Controllers
     {
         private readonly IUnitOfWork _unitOfWork;
         private ApplicationUserManager _userManager;
+        private readonly IMapper _mapper;
 
         public PostController(IUnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
+            _mapper = AutoMapperConfiguration.Mapper;
         }
 
         public ApplicationUserManager UserManager
@@ -36,32 +41,37 @@ namespace Freelance.Controllers
         }
 
         [AllowAnonymous]
-        public ActionResult Posts()
+        public ActionResult Posts(int? page, string SearchByTitle = null, string SearchByDate = null, string SearchByClientName = null)
         {
             IEnumerable<Post> posts = new List<Post>();
 
             if (User.IsInRole("Admin") || User.IsInRole("Freelancer"))
             {
-                posts = _unitOfWork.Posts.ListPosts();
+                posts = _unitOfWork.Posts.ListPosts(SearchByTitle, SearchByDate, SearchByClientName);
             }
 
             else if(User.IsInRole("Client"))
             {
-                posts = _unitOfWork.Posts.ClientPosts(User.Identity.GetUserId());
+                posts = _unitOfWork.Posts.ClientPosts(User.Identity.GetUserId(), SearchByTitle, SearchByDate, SearchByClientName);
             }
 
             else
             {
-                posts = _unitOfWork.Posts.ListPosts();
+                posts = _unitOfWork.Posts.ListPosts(SearchByTitle, SearchByDate, SearchByClientName);
             }
 
             var model = new PostsViewModel
             {
-                Posts = posts,
-                Proposals = _unitOfWork.Proposals.PostsProposals().ToLookup(p => p.FreelancerId)
+                Posts = posts.ToList().Select(_mapper.Map<Post, PostViewModel>).ToPagedList(page ?? 1, 2),
+                Proposals = _unitOfWork.Proposals.PostsProposals().ToLookup(p => p.PostId)
             };
 
             return View(model);
+        }
+
+        public ActionResult PostsRequests(int? page)
+        {
+            return View(_unitOfWork.Posts.PostsRequests().Select(_mapper.Map<Post, PostRequestViewModel>).ToPagedList(page ?? 1, 1));
         }
 
         public ActionResult Create()
@@ -80,16 +90,7 @@ namespace Freelance.Controllers
 
             var userId = User.Identity.GetUserId();
             var user = UserManager.Users.Single(u => u.Id == userId);
-            var post = new Post
-            {
-                ClientName = user.FirstName + " " + user.LastName,
-                JobType = model.JobType,
-                JobBudget = model.JobBudget,
-                CreationDate = DateTime.Now,
-                JobDescription = model.JobDescription,
-                ClientId = userId
-
-            };
+            var post = _mapper.Map <PostFormViewModel, Post>(model);
 
             _unitOfWork.Posts.Add(post);
             _unitOfWork.Complete();
@@ -108,16 +109,7 @@ namespace Freelance.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.NotFound);
             }
 
-            var model = new PostFormViewModel
-            {
-                Id = post.Id,
-                JobType = post.JobType,
-                JobBudget = post.JobBudget,
-                JobDescription = post.JobDescription,
-                IsAccepted = post.IsAccepted
-            };
-
-            return View(model);
+            return View(_mapper.Map<Post, PostFormViewModel>(post));
         }
 
         [HttpPost]
@@ -131,18 +123,7 @@ namespace Freelance.Controllers
 
             var userId = User.Identity.GetUserId();
             var user = UserManager.Users.Single(u => u.Id == userId);
-            var post = new Post
-            {
-                Id = model.Id,
-                ClientName = user.FirstName + " " + user.LastName,
-                JobType = model.JobType,
-                JobBudget = model.JobBudget,
-                CreationDate = DateTime.Now,
-                JobDescription = model.JobDescription,
-                IsAccepted = model.IsAccepted,
-                ClientId = userId
-
-            };
+            var post = _mapper.Map<PostFormViewModel, Post>(model);
 
             _unitOfWork.Posts.Update(post);
             _unitOfWork.Complete();
@@ -163,22 +144,11 @@ namespace Freelance.Controllers
 
             var model = new PostDetailsViewModel
             {
-                Id = post.Id,
-                ClientName = post.ClientName,
-                JobType = post.JobType,
-                JobBudget = post.JobBudget,
-                CreationDate = post.CreationDate,
-                JobDescription = post.JobDescription,
-                Client = post.Client,
-                Proposals = _unitOfWork.Proposals.PostsProposals().ToLookup(p => p.FreelancerId)
+                Post = _mapper.Map<Post, PostViewModel>(post),
+                Proposals = _unitOfWork.Proposals.PostsProposals().ToLookup(p => p.PostId)
             };
 
             return View(model);
-        }
-
-        public ActionResult PostsRequests()
-        {
-            return View(_unitOfWork.Posts.PostsRequests());
         }
     }
 }

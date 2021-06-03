@@ -1,22 +1,21 @@
 ﻿using Freelance.Core.Enums;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Web;
 
-namespace Freelance.Core.Models
+namespace Freelance.Core.ViewModels
 {
-    public class Post
+    public class PostViewModel
     {
         public int Id { get; set; }
+        public string ClientName { get; set; }
+        public string ClientPhotoPath { get; set; }
         public string JobTitle { get; set; }
         public JobType JobType { get; set; }
         public double JobBudget { get; set; }
         public DateTime CreationDate { get; set; }
         public string JobDescription { get; set; }
-        public bool IsAccepted { get; set; }
-        public string ClientId { get; set; }
-
-        public ICollection<Proposal> Proposals { get; set; }
-        public ApplicationUser Client { get; set; }
+        public int ProposalsCount { get; set; }
     }
 }

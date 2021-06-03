@@ -1,4 +1,5 @@
 ﻿@using Microsoft.AspNet.Identity;
+@using PagedList.Mvc;
 
 @model Freelance.Core.ViewModels.PostsViewModel
 
@@ -21,23 +22,26 @@
                             <div class="row">
                                 <div class="col-lg-12">
                                     <div class="single_field">
-                                        <input type="text" placeholder="Job Title">
+                                        <input name="@Html.NameFor(m => m.SearchByTitle)" type="text" placeholder="Job Title">
                                     </div>
                                 </div>
                                 <div class="col-lg-12">
                                     <div class="single_field">
-                                        <input type="Date" placeholder="Choose Date">
+                                        <input name="@Html.NameFor(m => m.SearchByDate)" type="Date" placeholder="Choose Date">
                                     </div>
                                 </div>
                                 <div class="col-lg-12">
                                     <div class="single_field">
-                                        <input type="text" placeholder="Client Name">
+                                        <input name="@Html.NameFor(m => m.SearchByClientName)" type="text" placeholder="Client Name">
                                     </div>
                                 </div>
                             </div>
 
                             <div class="reset_btn">
-                                <button class="boxed-btn3 w-100" type="submit">Search</button>
+                                @using (Html.BeginForm("Posts", "Post", new { query = "test" }, FormMethod.Get))
+                                {
+                                    <button type="submit" class="genric-btn success">Search</button>
+                                }
                             </div>
                         </form>
                     </div>
@@ -52,35 +56,31 @@
                             <div class="col-lg-12 col-md-12">
                                 <div class="single_jobs white-bg d-flex justify-content-between">
                                     <div class="jobs_left d-flex align-items-center">
-                                        <div><a href="@Url.Action("Details", "Post", new { id = post.Id })" class="genric-btn success">View Post</a></div>
                                         <div class="thumb">
-                                            <img src="@Url.Content(@post.Client.PhotoPath)" style="width: 229px; height: 100px" alt="">
+                                            <img src="@Url.Content(post.ClientPhotoPath)" style="width: 229px; height: 100px" alt="">
                                         </div>
                                         <div class="jobs_conetent">
-                                            <h4>
-                                                <span>@(post.JobType == Freelance.Core.Enums.JobType.Fixed? "Fixed": "Hourly")</span>
-                                            </h4>
+                                            <a href="@Url.Action("Details", "Post", new { id = post.Id })"><h4>@post.JobTitle</h4></a>
                                             <div class="links_locat d-flex align-items-center">
                                                 <div class="location">
-                                                    <p>Job Budget</p>
+                                                    <p><i class="fa fa-money-bill-wave"></i>@post.JobBudget</p>
                                                 </div>
                                                 <div class="location">
-                                                    <p>@post.JobBudget</p>
+                                                    <p> <i class="fa fa-clock-o"></i>@(post.JobType == Freelance.Core.Enums.JobType.Fixed? "Fixed": "Hourly")</p>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                     @if (User.IsInRole("Freelancer"))
                                     {
-                                <div class="jobs_right">
-                                    <div class="apply_now">
-                                        @*<a class="heart_mark" href="#"> <i class="fa fa-remove"></i> </a>*@
-                                        <button data-freelancer-id="@User.Identity.GetUserId()" data-post-id="@post.Id" class="boxed-btn3 js-toggle-applying">@(Model.Proposals.Contains(@User.Identity.GetUserId()) ? "Applied" : "Apply Now")</button>
-                                    </div>
-                                    <div class="date">
-                                        <p>@post.CreationDate</p>
-                                    </div>
-                                </div>
+                                        <div class="jobs_right">
+                                            <div class="apply_now">
+                                                <button data-freelancer-id="@User.Identity.GetUserId()" data-post-id="@post.Id" class="boxed-btn3 js-toggle-applying">@(Model.Proposals.Contains(post.Id) ? "Applied" : "Apply Now")</button>
+                                            </div>
+                                            <div class="date">
+                                                <p>Date line: @post.CreationDate</p>
+                                            </div>
+                                        </div>
                                     }
                                     @if (User.IsInRole("Client") || User.IsInRole("Admin"))
                                     {
@@ -101,12 +101,7 @@
                     <div class="row">
                         <div class="col-lg-12">
                             <div class="pagination_wrap">
-                                <ul>
-                                    <li><a href="#"> <i class="ti-angle-left"></i> </a></li>
-                                    <li><a href="#"><span>01</span></a></li>
-                                    <li><a href="#"><span>02</span></a></li>
-                                    <li><a href="#"> <i class="ti-angle-right"></i> </a></li>
-                                </ul>
+                                @Html.PagedListPager(Model.Posts, page => Url.Action("Posts", "Post", new { page, SearchByTitle = Request.QueryString["SearchByTitle"], SearchByDate = Request.QueryString["SearchByDate"], SearchByClientName = Request.QueryString["SearchByClientName"] }))
                             </div>
                         </div>
                     </div>

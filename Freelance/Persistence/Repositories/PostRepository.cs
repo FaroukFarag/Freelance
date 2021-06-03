@@ -1,5 +1,6 @@
 ﻿using Freelance.Core.IRepositories;
 using Freelance.Core.Models;
+using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
@@ -43,14 +44,58 @@ namespace Freelance.Persistence.Repositories
             _context.Posts.Remove(post);
         }
 
-        public IEnumerable<Post> ListPosts()
+        public void RemoveClientPosts(string clientId)
         {
-            return _context.Posts.Include(p => p.Client).Where(p => p.IsAccepted).ToList();
+            var clientPosts = _context.Posts.Where(p => p.ClientId == clientId);
+
+            _context.Posts.RemoveRange(clientPosts);
         }
 
-        public IEnumerable<Post> ClientPosts(string clientId)
+        public IEnumerable<Post> ListPosts(string SearchByTitle, string SearchByDate, string SearchByClientName)
         {
-            return _context.Posts.Include(p => p.Client).Where(p => p.ClientId == clientId && p.IsAccepted).ToList();
+            IQueryable<Post> filteredList = _context.Posts.Where(p => p.IsAccepted);
+
+            if (!String.IsNullOrEmpty(SearchByTitle))
+            {
+                filteredList = filteredList.Where(p => p.JobTitle.Contains(SearchByTitle));
+            }
+
+            if (!String.IsNullOrEmpty(SearchByDate))
+            {
+                var date = DateTime.Parse(SearchByDate);
+
+                filteredList = filteredList.Where(p => p.CreationDate <= date);
+            }
+
+            if (!String.IsNullOrEmpty(SearchByClientName))
+            {
+                filteredList = filteredList.Where(p => p.Client.FirstName.Contains(SearchByClientName) || p.Client.LastName.Contains(SearchByClientName));
+            }
+
+            return filteredList.Include(p => p.Client);
+        }
+
+        public IEnumerable<Post> ClientPosts(string clientId, string SearchByTitle, string SearchByDate, string SearchByClientName)
+        {
+            IQueryable<Post> filteredList = _context.Posts.Where(p => p.ClientId == clientId && p.IsAccepted);
+
+            if (!String.IsNullOrEmpty(SearchByTitle))
+            {
+                filteredList = filteredList.Where(p => p.JobTitle.Contains(SearchByTitle));
+            }
+
+            if (!String.IsNullOrEmpty(SearchByDate))
+            {
+                var date = DateTime.Parse(SearchByDate);
+
+                filteredList = filteredList.Where(p => p.CreationDate <= date);
+            }
+
+            if (!String.IsNullOrEmpty(SearchByClientName))
+            {
+                filteredList = filteredList.Where(p => p.Client.FirstName.Contains(SearchByClientName) || p.Client.LastName.Contains(SearchByClientName));
+            }
+            return filteredList.Include(p => p.Client).ToList();
         }
 
         public IEnumerable<Post> PostsRequests()

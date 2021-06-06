@@ -5,6 +5,7 @@ using System.Web.Http;
 
 namespace Freelance.Controllers.Api
 {
+    [Authorize]
     [RoutePrefix("api/Proposal")]
     public class ProposalController : ApiController
     {
@@ -22,7 +23,7 @@ namespace Freelance.Controllers.Api
             var userId = User.Identity.GetUserId();
             var exists = _unitOfWork.Proposals.GetProposal(userId, dto.PostId);
 
-            if(exists != null)
+            if (exists != null)
             {
                 return BadRequest();
             }
@@ -35,6 +36,7 @@ namespace Freelance.Controllers.Api
 
         [HttpPost]
         [Route("Accept")]
+        [Authorize(Roles = "Client")]
         public IHttpActionResult Accept([FromBody] ProposalDto dto)
         {
             var exists = _unitOfWork.Proposals.GetProposal(dto.FreelancerId, dto.PostId);

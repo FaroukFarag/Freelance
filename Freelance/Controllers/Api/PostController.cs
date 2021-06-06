@@ -9,6 +9,7 @@ using System.Web.Http;
 
 namespace Freelance.Controllers.Api
 {
+    [Authorize]
     public class PostController : ApiController
     {
         private readonly IUnitOfWork _unitOfWork;
@@ -19,6 +20,7 @@ namespace Freelance.Controllers.Api
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public IHttpActionResult Accept(PostDto dto)
         {
             _unitOfWork.Posts.Accept(dto.PostId);
@@ -28,6 +30,7 @@ namespace Freelance.Controllers.Api
         }
 
         [HttpDelete]
+        [Authorize(Roles = "Admin,Client")]
         public IHttpActionResult Delete(int id)
         {
             var post = _unitOfWork.Posts.GetPost(id);

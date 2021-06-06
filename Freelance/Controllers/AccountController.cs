@@ -167,8 +167,6 @@ namespace Freelance.Controllers
 
                 fileName = Path.Combine(Server.MapPath("~/Photos"), fileName);
 
-                model.PhotoFile.SaveAs(fileName);
-
                 var user = new ApplicationUser
                 {
                     FirstName = model.FirstName,
@@ -182,6 +180,8 @@ namespace Freelance.Controllers
                 var result = await UserManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
+                    model.PhotoFile.SaveAs(fileName);
+
                     await UserManager.AddToRoleAsync(user.Id, model.RoleName);
 
                     await SignInManager.SignInAsync(user, isPersistent:false, rememberBrowser:false);
@@ -260,16 +260,14 @@ namespace Freelance.Controllers
 
         //
         // GET: /Account/ResetPassword
-        [AllowAnonymous]
-        public ActionResult ResetPassword(string code)
+        public ActionResult ResetPassword()
         {
-            return code == null ? View("Error") : View();
+            return View();
         }
 
         //
         // POST: /Account/ResetPassword
         [HttpPost]
-        [AllowAnonymous]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> ResetPassword(ResetPasswordViewModel model)
         {
@@ -277,16 +275,16 @@ namespace Freelance.Controllers
             {
                 return View(model);
             }
-            var user = await UserManager.FindByNameAsync(model.Email);
+            var user = await UserManager.FindAsync(User.Identity.GetUserName(), model.CurrentPassword);
             if (user == null)
             {
                 // Don't reveal that the user does not exist
-                return RedirectToAction("ResetPasswordConfirmation", "Account");
+                return RedirectToAction("Profile", "Account");
             }
-            var result = await UserManager.ResetPasswordAsync(user.Id, model.Code, model.Password);
+            var result = await UserManager.ChangePasswordAsync(user.Id, model.CurrentPassword, model.Password);
             if (result.Succeeded)
             {
-                return RedirectToAction("ResetPasswordConfirmation", "Account");
+                return RedirectToAction("Profile", "Account");
             }
             AddErrors(result);
             return View();
@@ -432,7 +430,6 @@ namespace Freelance.Controllers
             return View();
         }
 
-        [AllowAnonymous]
         public ActionResult Profile()
         {
             var userId = User.Identity.GetUserId();
@@ -441,7 +438,6 @@ namespace Freelance.Controllers
             return View(model);
         }
 
-        [AllowAnonymous]
         public ActionResult Edit()
         {
             var userId = User.Identity.GetUserId();
@@ -548,11 +544,11 @@ namespace Freelance.Controllers
             return RedirectToAction("Users");
         }
 
-        [AllowAnonymous]
+        [Authorize(Roles = "Admin")]
         public ActionResult Users(int? page)
         {
             var userId = User.Identity.GetUserId();
-            var model = UserManager.Users.Where(u => u.Id != userId).ToList().ToPagedList(page ?? 1, 1);
+            var model = UserManager.Users.Where(u => u.Id != userId).ToList().ToPagedList(page ?? 1, 10);
 
             return View(model);
         }

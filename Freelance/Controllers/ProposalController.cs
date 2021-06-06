@@ -8,6 +8,7 @@ using System.Web.Mvc;
 
 namespace Freelance.Controllers
 {
+    [Authorize]
     public class ProposalController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;
@@ -17,6 +18,7 @@ namespace Freelance.Controllers
             _unitOfWork = unitOfWork;
         }
 
+        [Authorize(Roles = "Admin,Client")]
         public ActionResult Proposals(int? page)
         {
             var model = _unitOfWork.Proposals.PostsProposals().ToPagedList(page ?? 1, 1);

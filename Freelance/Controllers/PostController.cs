@@ -62,18 +62,21 @@ namespace Freelance.Controllers
 
             var model = new PostsViewModel
             {
-                Posts = posts.ToList().Select(_mapper.Map<Post, PostViewModel>).ToPagedList(page ?? 1, 2),
+                Posts = posts.ToList().Select(_mapper.Map<Post, PostViewModel>).ToPagedList(page ?? 1, 10),
                 Proposals = _unitOfWork.Proposals.PostsProposals().ToLookup(p => p.PostId)
             };
 
             return View(model);
         }
 
+        [Authorize(Roles = "Admin")]
         public ActionResult PostsRequests(int? page)
         {
-            return View(_unitOfWork.Posts.PostsRequests().Select(_mapper.Map<Post, PostRequestViewModel>).ToPagedList(page ?? 1, 1));
+            var model = _unitOfWork.Posts.PostsRequests().Select(_mapper.Map<Post, PostRequestViewModel>);
+            return View(model.ToPagedList(page ?? 1, 10));
         }
 
+        [Authorize(Roles = "Admin,Client")]
         public ActionResult Create()
         {
             return View();
@@ -81,6 +84,7 @@ namespace Freelance.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin,Client")]
         public ActionResult Create(PostFormViewModel model)
         {
             if(!ModelState.IsValid)
@@ -98,6 +102,7 @@ namespace Freelance.Controllers
             return RedirectToAction("Posts");
         }
 
+        [Authorize(Roles = "Admin,Client")]
         public ActionResult Edit(int id)
         {
             var post = _unitOfWork.Posts.GetPost(id);
@@ -114,6 +119,7 @@ namespace Freelance.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin,Client")]
         public ActionResult Edit(PostFormViewModel model)
         {
             if (!ModelState.IsValid)

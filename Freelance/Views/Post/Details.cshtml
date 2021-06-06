@@ -50,7 +50,10 @@
                             <li>Creation Date: <span>@Model.Post.CreationDate</span></li>
                             <li>Job Budget: <span>@Model.Post.JobBudget</span></li>
                             <li>Job Type: <span>@(Model.Post.JobType == Freelance.Core.Enums.JobType.Fixed? "Fixed": "Hourly")</span></li>
-                            <li>Submited Proposal: <span>@Model.Post.ProposalsCount</span></li>
+                            @if (!User.IsInRole("Freelancer"))
+                            {
+                                <li>Submited Proposal: <span>@Model.Post.ProposalsCount</span></li>
+                            }
                         </ul>
                     </div>
                 </div>

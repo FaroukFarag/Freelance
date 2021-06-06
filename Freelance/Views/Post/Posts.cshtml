@@ -3,7 +3,7 @@
 
 @model Freelance.Core.ViewModels.PostsViewModel
 
-<div class="job_listing_area plus_padding">
+<div class="job_listing_area plus_padding" style="padding:0px; background-color:white;">
     <div class="container">
         @if (!User.IsInRole("Freelancer") && User.Identity.IsAuthenticated)
         {
@@ -14,40 +14,40 @@
             </div>
         }
         <div class="row">
-            <div class="col-lg-3">
+            <div class="col-lg-12">
                 <div class="job_filter white-bg">
                     <div class="form_inner white-bg">
-                        <h3>Filter</h3>
                         <form action="#">
                             <div class="row">
-                                <div class="col-lg-12">
+                                <div class="col-lg-3">
                                     <div class="single_field">
                                         <input name="@Html.NameFor(m => m.SearchByTitle)" type="text" placeholder="Job Title">
                                     </div>
                                 </div>
-                                <div class="col-lg-12">
+                                <div class="col-lg-3">
                                     <div class="single_field">
                                         <input name="@Html.NameFor(m => m.SearchByDate)" type="Date" placeholder="Choose Date">
                                     </div>
                                 </div>
-                                <div class="col-lg-12">
+                                <div class="col-lg-3">
                                     <div class="single_field">
                                         <input name="@Html.NameFor(m => m.SearchByClientName)" type="text" placeholder="Client Name">
                                     </div>
                                 </div>
-                            </div>
-
-                            <div class="reset_btn">
-                                @using (Html.BeginForm("Posts", "Post", new { query = "test" }, FormMethod.Get))
-                                {
-                                    <button type="submit" class="genric-btn success">Search</button>
-                                }
+                                <div class="reset_btn col-lg-3">
+                                    @using (Html.BeginForm("Posts", "Post", new { query = "test" }, FormMethod.Get))
+                                    {
+                                        <button type="submit" class="genric-btn success">Search</button>
+                                    }
+                                </div>
                             </div>
                         </form>
                     </div>
                 </div>
             </div>
-            <div class="col-lg-9">
+            </div>
+        <div class="row">
+            <div class="col-lg-12">
 
                 <div class="job_lists m-0">
                     <div class="row">
@@ -56,10 +56,10 @@
                             <div class="col-lg-12 col-md-12">
                                 <div class="single_jobs white-bg d-flex justify-content-between">
                                     <div class="jobs_left d-flex align-items-center">
-                                        <div class="thumb">
-                                            <img src="@Url.Content(post.ClientPhotoPath)" style="width: 229px; height: 100px" alt="">
+                                        <div class="thumb" style="padding:0px;">
+                                            <img src="@Url.Content(post.ClientPhotoPath)" style="width: 100px; height: 80px" alt="">
                                         </div>
-                                        <div class="jobs_conetent">
+                                        <div class="jobs_conetent" style="margin-left: 10px;">
                                             <a href="@Url.Action("Details", "Post", new { id = post.Id })"><h4>@post.JobTitle</h4></a>
                                             <div class="links_locat d-flex align-items-center">
                                                 <div class="location">

@@ -21,7 +21,7 @@ namespace Freelance.Controllers
         [Authorize(Roles = "Admin,Client")]
         public ActionResult Proposals(int? page)
         {
-            var model = _unitOfWork.Proposals.PostsProposals().ToPagedList(page ?? 1, 1);
+            var model = _unitOfWork.Proposals.PostsProposals().ToPagedList(page ?? 1, 10);
 
             return View(model);
         }

@@ -9,6 +9,7 @@ namespace Freelance.Core.IRepositories
         void Add(string freelancerId, int postId);
         void Accept(string freelancerId, int postId);
         void Remove(string freelancerId, int postId);
+        IEnumerable<Proposal> AllPostsProposals();
         IEnumerable<Proposal> PostsProposals();
     }
 }

@@ -613,6 +613,7 @@
     <Content Include="Views\Post\PostsRequests.cshtml" />
     <Content Include="Views\Proposal\Proposals.cshtml" />
     <Content Include="Views\Account\Edit.cshtml" />
+    <Content Include="Views\Account\Create.cshtml" />
     <None Include="Views\Post\Create.cshtml" />
     <Content Include="Views\Post\Details.cshtml" />
     <Content Include="Views\Shared\_RegisterPartial.cshtml" />

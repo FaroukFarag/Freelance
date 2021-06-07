@@ -44,6 +44,11 @@ namespace Freelance.Persistence.Repositories
             _context.Proposals.Remove(proposal);
         }
 
+        public IEnumerable<Proposal> AllPostsProposals()
+        {
+            return _context.Proposals.Include(p => p.Freelancer).Include(p => p.Post).ToList();
+        }
+
         public IEnumerable<Proposal> PostsProposals()
         {
             return _context.Proposals.Where(p => !p.IsAccepted).Include(p => p.Freelancer).Include(p => p.Post).ToList();

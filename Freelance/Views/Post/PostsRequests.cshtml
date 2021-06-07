@@ -22,7 +22,7 @@
                                             <a href="@Url.Action("Details", "Post", new { id = post.Id })"><h4>@post.JobTitle</h4></a>
                                             <div class="links_locat d-flex align-items-center">
                                                 <div class="location">
-                                                    <p><i class="fa fa-money-bill-wave"></i>@post.JobBudget</p>
+                                                    <p><i class="fa fa-money"></i>@post.JobBudget</p>
                                                 </div>
                                                 <div class="location">
                                                     <p> <i class="fa fa-clock-o"></i>@(post.JobType == Freelance.Core.Enums.JobType.Fixed? "Fixed": "Hourly")</p>

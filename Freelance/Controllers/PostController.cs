@@ -44,6 +44,7 @@ namespace Freelance.Controllers
         public ActionResult Posts(int? page, string SearchByTitle = null, string SearchByDate = null, string SearchByClientName = null)
         {
             IEnumerable<Post> posts = new List<Post>();
+            IEnumerable<Proposal> proposals = new List<Proposal>();
 
             if (User.IsInRole("Admin") || User.IsInRole("Freelancer"))
             {
@@ -63,7 +64,7 @@ namespace Freelance.Controllers
             var model = new PostsViewModel
             {
                 Posts = posts.ToList().Select(_mapper.Map<Post, PostViewModel>).ToPagedList(page ?? 1, 10),
-                Proposals = _unitOfWork.Proposals.PostsProposals().ToLookup(p => p.PostId)
+                Proposals = _unitOfWork.Proposals.AllPostsProposals().ToLookup(p => p.PostId)
             };
 
             return View(model);

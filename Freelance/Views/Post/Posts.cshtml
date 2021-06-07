@@ -1,4 +1,5 @@
 ﻿@using Microsoft.AspNet.Identity;
+@using System.Linq;
 @using PagedList.Mvc;
 
 @model Freelance.Core.ViewModels.PostsViewModel
@@ -63,7 +64,7 @@
                                             <a href="@Url.Action("Details", "Post", new { id = post.Id })"><h4>@post.JobTitle</h4></a>
                                             <div class="links_locat d-flex align-items-center">
                                                 <div class="location">
-                                                    <p><i class="fa fa-money-bill-wave"></i>@post.JobBudget</p>
+                                                    <p><i class="fa fa-money"></i>@post.JobBudget</p>
                                                 </div>
                                                 <div class="location">
                                                     <p> <i class="fa fa-clock-o"></i>@(post.JobType == Freelance.Core.Enums.JobType.Fixed? "Fixed": "Hourly")</p>
@@ -74,6 +75,10 @@
                                     @if (User.IsInRole("Freelancer"))
                                     {
                                         <div class="jobs_right">
+                                            @if (Model.Proposals[post.Id].Any(p => p.FreelancerId == User.Identity.GetUserId() && p.IsAccepted))
+                                            {
+                                                <span class="label label-success">Accepted</span>
+                                            }
                                             <div class="apply_now">
                                                 <button data-freelancer-id="@User.Identity.GetUserId()" data-post-id="@post.Id" class="boxed-btn3 js-toggle-applying">@(Model.Proposals.Contains(post.Id) ? "Applied" : "Apply Now")</button>
                                             </div>
